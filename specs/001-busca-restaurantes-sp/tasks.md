@@ -246,6 +246,33 @@
 
 ---
 
+## Phase 9: Dynamic Facets via Atlas Search (US10)
+
+**Purpose**: Substituir filtros hardcoded por facets dinâmicos calculados pelo Atlas Search `$searchMeta`
+
+### Tests for User Story 10 (REQUIRED)
+
+- [ ] T070 [P] [US10] Add contract test for GET /v1/restaurants/facets in backend/tests/contract/facets.contract.test.ts
+- [ ] T071 [P] [US10] Add integration test for $searchMeta facet pipeline in backend/tests/integration/facets.test.ts
+- [ ] T072 [P] [US10] Add frontend unit test for useFacets hook in frontend/tests/unit/useFacets.test.ts
+
+### Implementation for User Story 10
+
+- [x] T073 [US10] Adicionar tipos FacetBucket e FacetsResponse ao modelo em backend/src/models/restaurant.ts
+- [x] T074 [US10] Criar FacetsQuerySchema Zod (bounding box) em backend/src/validation/search.ts
+- [x] T075 [US10] Implementar getFacets no repositório com $searchMeta facet (cuisineFacet string + priceRangeFacet number) em backend/src/repositories/restaurantRepository.ts
+- [x] T076 [US10] Criar FacetsService em backend/src/services/facetsService.ts
+- [x] T077 [US10] Criar rota GET /v1/restaurants/facets em backend/src/api/routes/facetsRoutes.ts
+- [x] T078 [US10] Registrar rota no server.ts em backend/src/api/server.ts
+- [x] T079 [US10] Adicionar tipos FacetsResponse/FacetsParams e função fetchFacets ao apiClient em frontend/src/services/apiClient.ts
+- [x] T080 [US10] Criar hook useFacets com debounce 400ms em frontend/src/hooks/useFacets.ts
+- [x] T081 [US10] Refatorar SearchFilters para receber facets via prop e renderizar opções dinâmicas com contagem em frontend/src/components/SearchFilters.tsx
+- [x] T082 [US10] Chamar useFacets no HomePage e passar facets para SearchFilters em frontend/src/pages/HomePage.tsx
+
+**Checkpoint**: Dropdown de culinária e botões de preço exibem apenas valores presentes no viewport atual com contagem
+
+---
+
 ## Post-Implementation Bug Fixes & UI Polish
 
 > Registrados após o build inicial para rastreabilidade. Não alteram requisitos funcionais.

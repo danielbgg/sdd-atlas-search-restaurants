@@ -43,6 +43,23 @@ export interface AutocompleteResponse {
   suggestions: AutocompleteSuggestion[];
 }
 
+export interface FacetBucket {
+  value: string;
+  count: number;
+}
+
+export interface FacetsResponse {
+  cuisines: FacetBucket[];
+  priceRanges: FacetBucket[];
+}
+
+export interface FacetsParams {
+  neLat: number;
+  neLng: number;
+  swLat: number;
+  swLng: number;
+}
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 async function apiFetch<T>(path: string, params: Record<string, string | number | undefined>): Promise<T> {
@@ -72,4 +89,8 @@ export async function searchRestaurants(params: SearchParams): Promise<SearchRes
 
 export async function autocompleteRestaurants(q: string, limit = 10): Promise<AutocompleteResponse> {
   return apiFetch<AutocompleteResponse>('/v1/restaurants/autocomplete', { q, limit });
+}
+
+export async function fetchFacets(params: FacetsParams): Promise<FacetsResponse> {
+  return apiFetch<FacetsResponse>('/v1/restaurants/facets', params as Record<string, string | number | undefined>);
 }

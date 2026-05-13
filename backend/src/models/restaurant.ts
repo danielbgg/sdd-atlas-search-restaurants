@@ -71,6 +71,16 @@ export interface AutocompleteResponse {
   suggestions: AutocompleteSuggestion[];
 }
 
+export interface FacetBucket {
+  value: string;
+  count: number;
+}
+
+export interface FacetsResponse {
+  cuisines: FacetBucket[];
+  priceRanges: FacetBucket[];
+}
+
 export function documentToResult(doc: RestaurantDocument & { distanceMeters?: number; scoreTextual?: number }): RestaurantResult {
   return {
     id: doc._id!.toString(),

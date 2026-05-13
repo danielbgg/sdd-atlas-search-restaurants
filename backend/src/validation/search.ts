@@ -19,5 +19,16 @@ export const AutocompleteQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(20).optional().default(10),
 });
 
+export const FacetsQuerySchema = z.object({
+  neLat: z.coerce.number().min(-90).max(90),
+  neLng: z.coerce.number().min(-180).max(180),
+  swLat: z.coerce.number().min(-90).max(90),
+  swLng: z.coerce.number().min(-180).max(180),
+}).refine(
+  (data) => data.neLat > data.swLat,
+  { message: 'neLat must be greater than swLat', path: ['neLat'] }
+);
+
 export type SearchQuery = z.infer<typeof SearchQuerySchema>;
 export type AutocompleteQuery = z.infer<typeof AutocompleteQuerySchema>;
+export type FacetsQuery = z.infer<typeof FacetsQuerySchema>;

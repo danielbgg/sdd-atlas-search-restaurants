@@ -1,19 +1,13 @@
 import { useSearchSession } from '../state/searchSessionStore';
+import type { FacetsResponse } from '../services/apiClient';
 
-const CUISINES = [
-  'brasileira', 'japonesa', 'italiana', 'francesa', 'árabe',
-  'mexicana', 'peruana', 'portuguesa', 'chinesa', 'tailandesa',
-  'indiana', 'americana', 'vegetariana',
-];
+const PRICE_VALUE: Record<string, number> = { '$': 1, '$$': 2, '$$$': 3, '$$$$': 4 };
 
-const PRICE_RANGES = [
-  { value: 1, label: '$' },
-  { value: 2, label: '$$' },
-  { value: 3, label: '$$$' },
-  { value: 4, label: '$$$$' },
-];
+interface SearchFiltersProps {
+  facets: FacetsResponse;
+}
 
-export default function SearchFilters(): JSX.Element {
+export default function SearchFilters({ facets }: SearchFiltersProps): JSX.Element {
   const { session, setFilterCuisine, setFilterPriceRange } = useSearchSession();
   const { cuisine, priceRange } = session.filters;
 
@@ -29,9 +23,9 @@ export default function SearchFilters(): JSX.Element {
           title="Filtrar por culinária"
         >
           <option value="">Todas culinárias</option>
-          {CUISINES.map((c) => (
-            <option key={c} value={c}>
-              {c.charAt(0).toUpperCase() + c.slice(1)}
+          {facets.cuisines.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.value.charAt(0).toUpperCase() + c.value.slice(1)} ({c.count})
             </option>
           ))}
         </select>
@@ -45,15 +39,18 @@ export default function SearchFilters(): JSX.Element {
           >
             Todos
           </button>
-          {PRICE_RANGES.map((p) => (
+          {facets.priceRanges.map((p) => (
             <button
               key={p.value}
-              className={`price-btn ${priceRange === p.value ? 'active' : ''}`}
-              onClick={() => setFilterPriceRange(priceRange === p.value ? undefined : p.value)}
-              data-testid={`price-btn-${p.value}`}
-              title={`Preço: ${p.label}`}
+              className={`price-btn ${priceRange === PRICE_VALUE[p.value] ? 'active' : ''}`}
+              onClick={() => {
+                const val = PRICE_VALUE[p.value];
+                setFilterPriceRange(priceRange === val ? undefined : val);
+              }}
+              data-testid={`price-btn-${PRICE_VALUE[p.value]}`}
+              title={`Preço: ${p.value} (${p.count})`}
             >
-              {p.label}
+              {p.value}
             </button>
           ))}
         </div>

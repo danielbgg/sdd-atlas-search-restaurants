@@ -1,6 +1,6 @@
 import { Collection, Db } from 'mongodb';
-import { RestaurantDocument, RestaurantResult, AutocompleteSuggestion, documentToResult } from '../models/restaurant';
-import type { SearchQuery, AutocompleteQuery } from '../validation/search';
+import { RestaurantDocument, RestaurantResult, AutocompleteSuggestion, FacetBucket, FacetsResponse, documentToResult } from '../models/restaurant';
+import type { SearchQuery, AutocompleteQuery, FacetsQuery } from '../validation/search';
 
 export class RestaurantRepository {
   private collection: Collection<RestaurantDocument>;
@@ -154,5 +154,71 @@ export class RestaurantRepository {
       lat: doc.location.coordinates[1],
       lng: doc.location.coordinates[0],
     }));
+  }
+
+  async getFacets(query: FacetsQuery): Promise<FacetsResponse> {
+    const { neLat, neLng, swLat, swLng } = query;
+
+    const pipeline = [
+      {
+        $searchMeta: {
+          index: 'default',
+          facet: {
+            operator: {
+              geoWithin: {
+                path: 'location',
+                box: {
+                  bottomLeft: { type: 'Point', coordinates: [swLng, swLat] },
+                  topRight: { type: 'Point', coordinates: [neLng, neLat] },
+                },
+              },
+            },
+            facets: {
+              cuisineFacet: {
+                type: 'string',
+                path: 'cuisine',
+                numBuckets: 50,
+              },
+              priceRangeFacet: {
+                type: 'number',
+                path: 'priceRange',
+                boundaries: [1, 2, 3, 4, 5],
+              },
+            },
+          },
+        },
+      },
+    ];
+
+    console.info('[MDB] aggregate — coleção: restaurants ($searchMeta facets)');
+    console.info('[MDB] pipeline:', JSON.stringify(pipeline, null, 2));
+
+    type FacetMeta = {
+      facet: {
+        cuisineFacet: { buckets: { _id: string; count: number }[] };
+        priceRangeFacet: { buckets: { _id: number; count: number }[] };
+      };
+    };
+
+    const [meta] = await this.collection
+      .aggregate<FacetMeta>(pipeline)
+      .toArray();
+
+    if (!meta) {
+      return { cuisines: [], priceRanges: [] };
+    }
+
+    const cuisines: FacetBucket[] = (meta.facet.cuisineFacet?.buckets ?? [])
+      .filter((b) => b._id && b.count > 0)
+      .sort((a, b) => b.count - a.count)
+      .map((b) => ({ value: b._id, count: b.count }));
+
+    const PRICE_LABELS: Record<number, string> = { 1: '$', 2: '$$', 3: '$$$', 4: '$$$$' };
+    const priceRanges: FacetBucket[] = (meta.facet.priceRangeFacet?.buckets ?? [])
+      .filter((b) => b._id >= 1 && b._id <= 4 && b.count > 0)
+      .sort((a, b) => a._id - b._id)
+      .map((b) => ({ value: PRICE_LABELS[b._id] ?? String(b._id), count: b.count }));
+
+    return { cuisines, priceRanges };
   }
 }

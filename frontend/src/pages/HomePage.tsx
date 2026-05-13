@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { SearchSessionProvider, useSearchSession } from '../state/searchSessionStore';
 import { searchRestaurants } from '../services/apiClient';
+import { useFacets } from '../hooks/useFacets';
 import MapView from '../components/MapView';
 import RestaurantResultsList from '../components/RestaurantResultsList';
 import RestaurantSearchBox from '../components/RestaurantSearchBox';
@@ -10,6 +11,7 @@ function HomePageInner(): JSX.Element {
   const { session, setLoading, setResults, setError } = useSearchSession();
   const { viewport, selectedSuggestion, rawText, filters, status } = session;
   const abortRef = useRef<AbortController | null>(null);
+  const facets = useFacets(viewport);
 
   useEffect(() => {
     if (!viewport) return;
@@ -56,7 +58,7 @@ function HomePageInner(): JSX.Element {
         <h1>🍽️ <span>Restaurantes</span> em SP</h1>
         <div className="header-controls">
           <RestaurantSearchBox />
-          <SearchFilters />
+          <SearchFilters facets={facets} />
         </div>
       </header>
       <main className="app-main">

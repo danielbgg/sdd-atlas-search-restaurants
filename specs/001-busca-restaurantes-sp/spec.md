@@ -97,6 +97,23 @@ Como pessoa explorando a lista de resultados, quero clicar em um restaurante da 
 
 ---
 
+### User Story 10 - Filtros dinâmicos via Atlas Search Facets (Priority: P2)
+
+Como pessoa explorando restaurantes, quero que as opções de culinária e faixa de preço mostrem apenas os valores disponíveis na área visível do mapa, com contagem de restaurantes por opção.
+
+**Why this priority**: Demonstra o operador `$searchMeta facet` do Atlas Search — diferencial central da demo que não existe em queries tradicionais MongoDB.
+
+**Independent Test**: Navegar o mapa para uma área com poucos restaurantes e verificar que o dropdown de culinária lista apenas as culinárias presentes nessa área (não a lista hardcoded completa), com contagens corretas.
+
+**Acceptance Scenarios**:
+
+1. **Given** que o usuario está vendo o mapa, **When** o viewport é carregado, **Then** o dropdown de culinária lista apenas os valores presentes nos restaurantes daquela área, ordenados por contagem decrescente.
+2. **Given** que o usuario move o mapa para outra área, **When** o viewport muda, **Then** os filtros são atualizados (após debounce de 400ms) para refletir a nova área.
+3. **Given** que o usuario está em área com restaurantes, **When** os facets são carregados, **Then** cada opção mostra o nome e a contagem de restaurantes entre parênteses.
+4. **Given** que o usuario tem um filtro ativo que não existe na nova área, **Then** o filtro permanece visualmente selecionado mas os resultados refletem a ausência de correspondências.
+
+---
+
 ### User Story 8 - Favicon personalizado (Priority: P3)
 
 Como usuário acessando o site, quero ver um ícone temático na aba do navegador que identifique o site como uma aplicação de busca de restaurantes.
@@ -170,6 +187,9 @@ Como desenvolvedor demonstrando as capacidades do Atlas Search, quero ver no con
 - **FR-018**: O servidor MUST logar no console o filtro ou pipeline MongoDB exato antes de cada execução de query (geo, search compound, autocomplete).
 - **FR-019**: O sistema MUST exibir um favicon personalizado (garfo + faca, cores da identidade visual) na aba do navegador.
 - **FR-020**: O sistema MUST exibir um marcador de crosshair vermelho fixo no centro do mapa para indicar o ponto de referência do viewport do usuário. O marcador não deve interceptar eventos de interação com o mapa.
+- **FR-021**: O sistema MUST calcular e exibir as opções de filtro de culinária e faixa de preço dinamicamente via `$searchMeta facet` do Atlas Search, refletindo apenas os valores presentes nos restaurantes do viewport atual.
+- **FR-022**: Os facets MUST incluir contagem de documentos por bucket para cada opção exibida.
+- **FR-023**: Os facets MUST ser recalculados sempre que o viewport mudar (com debounce de 400ms para não disparar a cada pixel de pan).
 
 ### Quality, UX, and Performance Requirements *(mandatory)*
 

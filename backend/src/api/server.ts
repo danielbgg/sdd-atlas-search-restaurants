@@ -4,6 +4,7 @@ import 'dotenv/config';
 import { connectToMongoDB, healthCheck } from '../config/mongodb';
 import { createSearchRouter } from './routes/searchRoutes';
 import { createAutocompleteRouter } from './routes/autocompleteRoutes';
+import { createFacetsRouter } from './routes/facetsRoutes';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { performanceLogger } from './middleware/performanceLogger';
 
@@ -27,6 +28,7 @@ export async function createApp(): Promise<express.Application> {
 
   app.use('/v1/restaurants/search', createSearchRouter(db));
   app.use('/v1/restaurants/autocomplete', createAutocompleteRouter(db));
+  app.use('/v1/restaurants/facets', createFacetsRouter(db));
 
   app.use(notFoundHandler);
   app.use(errorHandler);
