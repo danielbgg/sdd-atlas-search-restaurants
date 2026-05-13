@@ -9,6 +9,12 @@ MVP de busca de restaurantes em **São Paulo** combinando busca geoespacial por 
 
 ---
 
+![Screenshot da aplicação mostrando o mapa de São Paulo com marcadores de restaurantes e lista de resultados](docs/screenshot.png)
+
+> **Implementação oficial de referência:** [whatscooking.mongosa.net](https://whatscooking.mongosa.net/) — versão de produção do mesmo conceito, desenvolvida pela equipe MongoDB South America.
+
+---
+
 ## O que o projeto faz
 
 O usuário abre um mapa interativo centralizado em São Paulo e, conforme navega (pan/zoom), a lista de restaurantes próximos é atualizada em tempo real. É possível buscar pelo nome do restaurante com tolerância a erros de digitação, filtrar por tipo de culinária, faixa de preço e avaliação mínima — todos os filtros alimentados dinamicamente pelos dados do próprio Atlas Search.
