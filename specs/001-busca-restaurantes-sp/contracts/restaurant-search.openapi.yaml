@@ -1,0 +1,136 @@
+openapi: 3.0.3
+info:
+  title: Restaurant Search API
+  version: 0.1.0
+  description: MVP API para busca de restaurantes em Sao Paulo por geolocalizacao e nome.
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/restaurants/search:
+    get:
+      summary: Busca restaurantes por viewport e termo textual opcional
+      parameters:
+        - in: query
+          name: neLat
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: neLng
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: swLat
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: swLng
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        "200":
+          description: Resultados da busca
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RestaurantResult"
+        "400":
+          description: Parametros invalidos
+  /v1/restaurants/autocomplete:
+    get:
+      summary: Sugestoes de nome com fuzzy ate 2 caracteres
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+            minLength: 1
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Sugestoes de nome
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AutocompleteSuggestion"
+        "400":
+          description: Parametros invalidos
+components:
+  schemas:
+    RestaurantResult:
+      type: object
+      required:
+        - id
+        - name
+        - location
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        location:
+          $ref: "#/components/schemas/GeoPoint"
+        address:
+          type: string
+        distanceMeters:
+          type: number
+        categories:
+          type: array
+          items:
+            type: string
+    AutocompleteSuggestion:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    GeoPoint:
+      type: object
+      required:
+        - lat
+        - lng
+      properties:
+        lat:
+          type: number
+        lng:
+          type: number
