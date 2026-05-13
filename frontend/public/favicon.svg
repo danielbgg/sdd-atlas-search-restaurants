@@ -1,27 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Background circle -->
-  <circle cx="32" cy="32" r="32" fill="#001E2B"/>
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="14" fill="#00ED64"/>
 
-  <!-- Fork (left) -->
-  <g fill="#00ED64" stroke="none">
-    <!-- Fork tines -->
-    <rect x="19" y="10" width="2.2" height="12" rx="1.1"/>
-    <rect x="22.4" y="10" width="2.2" height="12" rx="1.1"/>
-    <rect x="25.8" y="10" width="2.2" height="12" rx="1.1"/>
-    <!-- Fork neck/bridge -->
-    <rect x="19" y="21" width="9" height="2" rx="1"/>
-    <!-- Fork handle -->
-    <rect x="21.5" y="23" width="4" height="22" rx="2"/>
+  <!-- Fork (left) — bold white -->
+  <g fill="white">
+    <!-- 3 tines -->
+    <rect x="17" y="10" width="3" height="14" rx="1.5"/>
+    <rect x="21" y="10" width="3" height="14" rx="1.5"/>
+    <rect x="25" y="10" width="3" height="14" rx="1.5"/>
+    <!-- neck connector -->
+    <rect x="17" y="23" width="11" height="3" rx="1.5"/>
+    <!-- handle -->
+    <rect x="20" y="26" width="5" height="24" rx="2.5"/>
   </g>
 
-  <!-- Knife (right) -->
-  <g fill="#00684A" stroke="none">
-    <!-- Blade -->
-    <path d="M38 10 C38 10 44 14 44 24 L41 24 L41 10 Z" rx="1"/>
-    <!-- Handle -->
-    <rect x="39" y="24" width="4" height="21" rx="2" fill="#00ED64"/>
+  <!-- Knife (right) — bold white -->
+  <g fill="white">
+    <!-- blade: tapers from wide top to narrow -->
+    <path d="M36 10 L43 10 C43 10 44.5 18 42 24 L36 24 Z" rx="2"/>
+    <!-- handle -->
+    <rect x="37" y="24" width="5" height="26" rx="2.5"/>
   </g>
-
-  <!-- Small plate arc at bottom -->
-  <path d="M20 50 Q32 56 44 50" stroke="#00ED64" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 </svg>
