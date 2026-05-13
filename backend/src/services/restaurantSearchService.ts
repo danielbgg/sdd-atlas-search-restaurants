@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
-import { RestaurantRepository } from '../repositories/restaurantRepository.js';
-import type { SearchQuery } from '../validation/search.js';
-import type { SearchResponse } from '../models/restaurant.js';
+import { RestaurantRepository } from '../repositories/restaurantRepository';
+import type { SearchQuery } from '../validation/search';
+import type { SearchResponse } from '../models/restaurant';
 
 export class RestaurantSearchService {
   private repo: RestaurantRepository;

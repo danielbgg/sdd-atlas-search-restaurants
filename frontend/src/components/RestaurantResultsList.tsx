@@ -61,15 +61,17 @@ export default function RestaurantResultsList({
       <ul>
         {results.map((r) => (
           <li key={r.id} className="result-item" data-testid="result-item">
-            <div className="result-name">{r.name}</div>
+            <div className="result-header">
+              <div className="result-name">{r.name}</div>
+              {r.rating !== undefined && (
+                <span className="result-rating">⭐ {r.rating.toFixed(1)}</span>
+              )}
+            </div>
             {r.address && <div className="result-address">{r.address}</div>}
             <div className="result-meta">
               {r.neighborhood && <span className="result-neighborhood">{r.neighborhood}</span>}
               {r.cuisine && <span className="result-cuisine">{r.cuisine}</span>}
               {r.priceRange !== undefined && <PriceTag priceRange={r.priceRange} />}
-              {r.rating !== undefined && (
-                <span className="result-rating">⭐ {r.rating.toFixed(1)}</span>
-              )}
               {r.distanceMeters !== undefined && (
                 <span className="result-distance">
                   {r.distanceMeters < 1000

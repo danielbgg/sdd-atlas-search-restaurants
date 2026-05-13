@@ -1,6 +1,6 @@
 import { Collection, Db } from 'mongodb';
-import { RestaurantDocument, RestaurantResult, AutocompleteSuggestion, documentToResult } from '../models/restaurant.js';
-import type { SearchQuery, AutocompleteQuery } from '../validation/search.js';
+import { RestaurantDocument, RestaurantResult, AutocompleteSuggestion, documentToResult } from '../models/restaurant';
+import type { SearchQuery, AutocompleteQuery } from '../validation/search';
 
 export class RestaurantRepository {
   private collection: Collection<RestaurantDocument>;

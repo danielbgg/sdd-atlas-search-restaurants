@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Db } from 'mongodb';
-import { AutocompleteService } from '../../services/autocompleteService.js';
-import { AutocompleteQuerySchema } from '../../validation/search.js';
+import { AutocompleteService } from '../../services/autocompleteService';
+import { AutocompleteQuerySchema } from '../../validation/search';
 
 export function createAutocompleteRouter(db: Db): Router {
   const router = Router();

@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
-import { RestaurantRepository } from '../repositories/restaurantRepository.js';
-import type { AutocompleteQuery } from '../validation/search.js';
-import type { AutocompleteResponse } from '../models/restaurant.js';
+import { RestaurantRepository } from '../repositories/restaurantRepository';
+import type { AutocompleteQuery } from '../validation/search';
+import type { AutocompleteResponse } from '../models/restaurant';
 
 export class AutocompleteService {
   private repo: RestaurantRepository;

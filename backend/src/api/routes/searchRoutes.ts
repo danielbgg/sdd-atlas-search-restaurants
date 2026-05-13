@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Db } from 'mongodb';
-import { RestaurantSearchService } from '../../services/restaurantSearchService.js';
-import { SearchQuerySchema } from '../../validation/search.js';
+import { RestaurantSearchService } from '../../services/restaurantSearchService';
+import { SearchQuerySchema } from '../../validation/search';
 
 export function createSearchRouter(db: Db): Router {
   const router = Router();

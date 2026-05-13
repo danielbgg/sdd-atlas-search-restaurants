@@ -53,8 +53,8 @@ function HomePageInner(): JSX.Element {
   return (
     <div className="home-page">
       <header className="app-header">
-        <h1>🍽️ Restaurantes em São Paulo</h1>
-        <div className="search-area">
+        <h1>🍽️ <span>Restaurantes</span> em SP</h1>
+        <div className="header-controls">
           <RestaurantSearchBox />
           <SearchFilters />
         </div>

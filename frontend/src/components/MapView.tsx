@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import { useSearchSession } from '../state/searchSessionStore';
@@ -22,38 +22,33 @@ interface ViewportListenerProps {
 }
 
 function ViewportListener({ onViewportChange }: ViewportListenerProps): null {
+  const emitViewport = (m: ReturnType<typeof useMapEvents>): void => {
+    const bounds = m.getBounds();
+    const center = m.getCenter();
+    const zoom = m.getZoom();
+    const neLat = bounds.getNorthEast().lat;
+    const swLat = bounds.getSouthWest().lat;
+    if (neLat <= swLat) return; // bounds not yet calculated
+    onViewportChange({
+      centerLat: center.lat,
+      centerLng: center.lng,
+      zoomLevel: zoom,
+      northEastLat: neLat,
+      northEastLng: bounds.getNorthEast().lng,
+      southWestLat: swLat,
+      southWestLng: bounds.getSouthWest().lng,
+    });
+  };
+
   const map = useMapEvents({
-    moveend: () => {
-      const bounds = map.getBounds();
-      const center = map.getCenter();
-      const zoom = map.getZoom();
-
-      onViewportChange({
-        centerLat: center.lat,
-        centerLng: center.lng,
-        zoomLevel: zoom,
-        northEastLat: bounds.getNorthEast().lat,
-        northEastLng: bounds.getNorthEast().lng,
-        southWestLat: bounds.getSouthWest().lat,
-        southWestLng: bounds.getSouthWest().lng,
-      });
-    },
-    zoomend: () => {
-      const bounds = map.getBounds();
-      const center = map.getCenter();
-      const zoom = map.getZoom();
-
-      onViewportChange({
-        centerLat: center.lat,
-        centerLng: center.lng,
-        zoomLevel: zoom,
-        northEastLat: bounds.getNorthEast().lat,
-        northEastLng: bounds.getNorthEast().lng,
-        southWestLat: bounds.getSouthWest().lat,
-        southWestLng: bounds.getSouthWest().lng,
-      });
-    },
+    moveend: () => emitViewport(map),
+    zoomend: () => emitViewport(map),
   });
+
+  useEffect(() => {
+    emitViewport(map);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return null;
 }
@@ -64,12 +59,6 @@ interface MapViewProps {
 
 export default function MapView({ restaurants }: MapViewProps): JSX.Element {
   const { setViewport } = useSearchSession();
-  const initialViewportSent = useRef(false);
-
-  const handleViewportChange = (viewport: MapViewport): void => {
-    setViewport(viewport);
-    initialViewportSent.current = true;
-  };
 
   return (
     <div style={{ flex: 1, minHeight: 0 }} data-testid="map-container">
@@ -77,28 +66,12 @@ export default function MapView({ restaurants }: MapViewProps): JSX.Element {
         center={SAO_PAULO_CENTER}
         zoom={DEFAULT_ZOOM}
         style={{ height: '100%', width: '100%' }}
-        whenReady={(map) => {
-          // Emit initial viewport on mount
-          if (!initialViewportSent.current) {
-            const bounds = map.target.getBounds();
-            const center = map.target.getCenter();
-            handleViewportChange({
-              centerLat: center.lat,
-              centerLng: center.lng,
-              zoomLevel: DEFAULT_ZOOM,
-              northEastLat: bounds.getNorthEast().lat,
-              northEastLng: bounds.getNorthEast().lng,
-              southWestLat: bounds.getSouthWest().lat,
-              southWestLng: bounds.getSouthWest().lng,
-            });
-          }
-        }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <ViewportListener onViewportChange={handleViewportChange} />
+        <ViewportListener onViewportChange={setViewport} />
         {restaurants.map((r) => (
           <Marker key={r.id} position={[r.location.lat, r.location.lng]}>
             <Popup>

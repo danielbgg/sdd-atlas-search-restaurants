@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
-import { connectToMongoDB, healthCheck } from '../config/mongodb.js';
-import { createSearchRouter } from './routes/searchRoutes.js';
-import { createAutocompleteRouter } from './routes/autocompleteRoutes.js';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
-import { performanceLogger } from './middleware/performanceLogger.js';
+import { connectToMongoDB, healthCheck } from '../config/mongodb';
+import { createSearchRouter } from './routes/searchRoutes';
+import { createAutocompleteRouter } from './routes/autocompleteRoutes';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
+import { performanceLogger } from './middleware/performanceLogger';
 
 export async function createApp(): Promise<express.Application> {
   const app = express();

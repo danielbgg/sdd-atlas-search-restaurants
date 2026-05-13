@@ -20,15 +20,15 @@ export default function SearchFilters(): JSX.Element {
   return (
     <div className="search-filters" data-testid="search-filters">
       <div className="filter-group">
-        <label htmlFor="cuisine-filter" className="filter-label">Culinária</label>
         <select
           id="cuisine-filter"
           className="filter-select"
           value={cuisine ?? ''}
           onChange={(e) => setFilterCuisine(e.target.value || undefined)}
           data-testid="cuisine-filter"
+          title="Filtrar por culinária"
         >
-          <option value="">Todas</option>
+          <option value="">Todas culinárias</option>
           {CUISINES.map((c) => (
             <option key={c} value={c}>
               {c.charAt(0).toUpperCase() + c.slice(1)}
@@ -37,11 +37,11 @@ export default function SearchFilters(): JSX.Element {
         </select>
       </div>
       <div className="filter-group">
-        <span className="filter-label">Preço</span>
         <div className="price-buttons" data-testid="price-filter">
           <button
             className={`price-btn ${priceRange === undefined ? 'active' : ''}`}
             onClick={() => setFilterPriceRange(undefined)}
+            title="Todos os preços"
           >
             Todos
           </button>
@@ -51,6 +51,7 @@ export default function SearchFilters(): JSX.Element {
               className={`price-btn ${priceRange === p.value ? 'active' : ''}`}
               onClick={() => setFilterPriceRange(priceRange === p.value ? undefined : p.value)}
               data-testid={`price-btn-${p.value}`}
+              title={`Preço: ${p.label}`}
             >
               {p.label}
             </button>

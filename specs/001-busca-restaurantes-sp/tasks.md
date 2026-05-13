@@ -180,6 +180,40 @@
 
 ---
 
+## Post-Implementation Bug Fixes & UI Polish
+
+> Registrados após o build inicial para rastreabilidade. Não alteram requisitos funcionais.
+
+### BF-001 — ts-node-dev não resolvia imports `.js` em CommonJS
+- **Arquivo**: `backend/src/**/*.ts` (todas as importações relativas)
+- **Causa**: ts-node-dev com `module: commonjs` não consegue resolver extensões `.js` em tempo de execução
+- **Correção**: Removidas extensões `.js` de todos os imports relativos internos do backend; adicionado `moduleNameMapper` no `backend/jest.config.js` para manter compatibilidade com ts-jest
+
+### BF-002 — Leaflet `whenReady` enviava bounds inválidos (400 no backend)
+- **Arquivo**: `frontend/src/components/MapView.tsx`
+- **Causa**: O callback `whenReady` do `MapContainer` disparava antes do Leaflet calcular as dimensões reais do mapa, resultando em `neLat === swLat` — rejeitado pelo refinamento Zod `neLat must be greater than swLat`
+- **Correção**: Removido `whenReady`; emissão do viewport inicial movida para `useEffect` dentro de `ViewportListener` (componente filho com acesso ao mapa via `useMapEvents`); adicionada guarda `if (neLat <= swLat) return`
+
+### BF-003 — Mapa não renderizava (altura colapsada)
+- **Arquivo**: `frontend/src/index.css`
+- **Causa**: Classes CSS do layout (`.home-page`, `.app-main`, `.map-area`) não estavam definidas; `MapContainer` com `height: 100%` colapsava para 0
+- **Correção**: Adicionadas regras CSS com `flex: 1` e `min-height: 0` em toda a cadeia de ancestrais até o `MapContainer`
+
+### UI-001 — Reformulação visual da interface
+- **Arquivos**: `frontend/src/index.css`, `frontend/src/pages/HomePage.tsx`, `frontend/src/components/SearchFilters.tsx`, `frontend/src/components/RestaurantResultsList.tsx`
+- **Mudanças**:
+  - Header escuro (`#001E2B`) com search box, filtro de culinária e botões de preço na mesma linha
+  - Design tokens CSS (cores, sombras, raios)
+  - Cards de resultado com rating alinhado à direita, badges de bairro e culinária, hierarquia tipográfica
+  - Estados idle/empty/error com ícones centralizados
+
+### BF-004 — Dropdown de autocomplete aparecia atrás do mapa Leaflet
+- **Arquivo**: `frontend/src/index.css`
+- **Causa**: `.app-header` não tinha `position` declarado, tornando `z-index` ineficaz; o Leaflet cria stacking context próprio com z-index até ~1000
+- **Correção**: Adicionado `position: relative` e `z-index: 1000` ao `.app-header`; `overflow: visible` para o dropdown não ser cortado
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
