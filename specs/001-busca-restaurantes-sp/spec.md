@@ -97,6 +97,30 @@ Como pessoa explorando a lista de resultados, quero clicar em um restaurante da 
 
 ---
 
+### User Story 8 - Favicon personalizado (Priority: P3)
+
+Como usuário acessando o site, quero ver um ícone temático na aba do navegador que identifique o site como uma aplicação de busca de restaurantes.
+
+**Acceptance Scenarios**:
+
+1. **Given** que o usuario abre o site, **Then** a aba do navegador exibe um ícone com garfo e faca nas cores da identidade visual (#001E2B + #00ED64).
+
+---
+
+### User Story 9 - Marcador de centro do mapa (Priority: P2)
+
+Como usuário interagindo com o mapa, quero ver um crosshair vermelho fixo no centro da tela para saber exatamente qual ponto geográfico está sendo usado como referência da minha busca.
+
+**Why this priority**: Elimina ambiguidade sobre qual área está sendo buscada — o centro do viewport é implicitamente o "ponto do usuário".
+
+**Acceptance Scenarios**:
+
+1. **Given** que o usuario visualiza o mapa, **Then** um crosshair vermelho aparece fixo no centro independente de pan ou zoom.
+2. **Given** que o usuario arrasta o mapa, **Then** o crosshair permanece no centro da tela (é um elemento DOM fixo, não um marcador Leaflet).
+3. **Given** que o mapa exibe marcadores de restaurantes, **Then** o crosshair não bloqueia cliques nesses marcadores (pointer-events: none).
+
+---
+
 ### User Story 7 - Visualizar queries MongoDB no backend (Priority: P3)
 
 Como desenvolvedor demonstrando as capacidades do Atlas Search, quero ver no console do servidor as queries e pipelines de agregação exatos enviados ao MongoDB para cada busca.
@@ -144,6 +168,8 @@ Como desenvolvedor demonstrando as capacidades do Atlas Search, quero ver no con
 - **FR-016**: O sistema MUST navegar o mapa (flyTo zoom 18) ao restaurante quando o usuario clica em um card da lista de resultados.
 - **FR-017**: A endpoint de autocomplete MUST retornar as coordenadas (lat, lng) de cada sugestao para viabilizar a navegação no mapa.
 - **FR-018**: O servidor MUST logar no console o filtro ou pipeline MongoDB exato antes de cada execução de query (geo, search compound, autocomplete).
+- **FR-019**: O sistema MUST exibir um favicon personalizado (garfo + faca, cores da identidade visual) na aba do navegador.
+- **FR-020**: O sistema MUST exibir um marcador de crosshair vermelho fixo no centro do mapa para indicar o ponto de referência do viewport do usuário. O marcador não deve interceptar eventos de interação com o mapa.
 
 ### Quality, UX, and Performance Requirements *(mandatory)*
 

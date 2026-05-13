@@ -224,6 +224,28 @@
 
 ---
 
+## Phase 8: UX Refinements (US8, US9)
+
+**Purpose**: Favicon temático e indicador visual do centro do mapa
+
+### User Story 8 — Favicon personalizado
+
+- [x] T066 [US8] Criar favicon SVG temático (garfo+faca, cores #001E2B/#00ED64) em frontend/public/favicon.svg
+- [x] T067 [US8] Atualizar link rel=icon em frontend/index.html para apontar para /favicon.svg
+
+**Checkpoint**: Aba do navegador exibe ícone temático de restaurante
+
+---
+
+### User Story 9 — Crosshair no centro do mapa
+
+- [x] T068 [US9] Adicionar div.map-center-marker com div.map-center-dot sobre o MapContainer em frontend/src/components/MapView.tsx (position:absolute, pointer-events:none)
+- [x] T069 [US9] Definir estilos CSS do crosshair vermelho (.map-center-marker, .map-center-dot) em frontend/src/index.css
+
+**Checkpoint**: Crosshair vermelho fixo no centro do mapa, não intercepta cliques em marcadores
+
+---
+
 ## Post-Implementation Bug Fixes & UI Polish
 
 > Registrados após o build inicial para rastreabilidade. Não alteram requisitos funcionais.

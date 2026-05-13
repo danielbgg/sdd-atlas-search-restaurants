@@ -9,8 +9,14 @@ export default function RestaurantSearchBox(): JSX.Element {
   const [showDropdown, setShowDropdown] = useState(false);
   const [inputValue, setInputValue] = useState(session.rawText);
   const cancelRef = useRef<(() => void) | null>(null);
+  const selectedRef = useRef(false);
 
   useEffect(() => {
+    if (selectedRef.current) {
+      selectedRef.current = false;
+      return;
+    }
+
     if (cancelRef.current) {
       cancelRef.current();
     }
@@ -36,6 +42,7 @@ export default function RestaurantSearchBox(): JSX.Element {
   }, [inputValue, setText]);
 
   const handleSelect = (suggestion: AutocompleteSuggestion): void => {
+    selectedRef.current = true;
     setInputValue(suggestion.name);
     setSuggestions([]);
     setShowDropdown(false);

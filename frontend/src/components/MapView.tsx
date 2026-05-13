@@ -77,7 +77,7 @@ export default function MapView({ restaurants }: MapViewProps): JSX.Element {
   const { setViewport } = useSearchSession();
 
   return (
-    <div style={{ flex: 1, minHeight: 0 }} data-testid="map-container">
+    <div style={{ flex: 1, minHeight: 0, position: 'relative' }} data-testid="map-container">
       <MapContainer
         center={SAO_PAULO_CENTER}
         zoom={DEFAULT_ZOOM}
@@ -101,6 +101,10 @@ export default function MapView({ restaurants }: MapViewProps): JSX.Element {
           </Marker>
         ))}
       </MapContainer>
+      {/* Center crosshair — indicates viewport center / user reference point */}
+      <div className="map-center-marker" aria-hidden="true">
+        <div className="map-center-dot" />
+      </div>
     </div>
   );
 }
