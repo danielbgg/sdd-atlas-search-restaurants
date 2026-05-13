@@ -32,3 +32,6 @@
 ## Notes
 
 - Checklist validada com todos os itens aprovados na primeira iteracao.
+- Revisao pos-plan (2026-05-13): adicionados FR-011 a FR-014 (filtros por cuisine,
+  priceRange, rating e neighborhood), User Story 4, SC-009 e requisito de seed data
+  com 1.000 restaurantes. Todos os itens do checklist permanecem validos apos revisao.

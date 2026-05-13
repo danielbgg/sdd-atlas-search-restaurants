@@ -7,15 +7,25 @@
   - id (string, required, unique)
   - name (string, required)
   - location (GeoPoint, required)
+    - Formato GeoJSON: { type: "Point", coordinates: [longitude, latitude] }
   - address (string, optional)
+  - neighborhood (string, optional) — bairro do restaurante em SP
   - city (string, required; must be "Sao Paulo" no MVP)
   - categories (array<string>, optional)
-  - scoreTextual (number, computed)
-  - distanceMeters (number, computed)
+  - cuisine (string, optional) — tipo de culinária (ex: "japonesa", "italiana", "brasileira")
+  - priceRange (integer, optional) — faixa de preço de 1 (barato) a 4 (caro)
+  - rating (number, optional) — avaliação média de 1.0 a 5.0
+  - reviewCount (integer, optional) — número total de avaliações
+  - hours (object, optional) — { open: "HH:MM", close: "HH:MM" }
+  - scoreTextual (number, computed) — score de relevância textual do Atlas Search
+  - distanceMeters (number, computed) — distância calculada a partir do centro do viewport
 - Validation rules:
   - name nao pode ser vazio.
-  - location deve conter latitude/longitude validas.
+  - location deve conter latitude/longitude validas no formato GeoJSON Point.
+  - coordinates deve seguir a ordem [longitude, latitude].
   - city deve permanecer dentro do escopo do MVP.
+  - priceRange deve ser inteiro entre 1 e 4, se informado.
+  - rating deve ser número entre 1.0 e 5.0, se informado.
 
 ## Value Object: MapViewport
 
@@ -70,3 +80,35 @@
 
 - Input principal: viewport + query textual opcional.
 - Output principal: lista ordenada de restaurantes com dados minimos para mapa e lista.
+
+## Atlas Search Index
+
+- Coleção: `restaurants`
+- Campos indexados para busca textual: `name`, `cuisine`, `neighborhood`, `categories`
+- Campos indexados para filtros: `priceRange`, `rating`, `city`
+- Campo geoespacial: `location` (tipo `geo` no índice do Atlas Search)
+- Nome do índice: `default`
+
+## Seed Data
+
+O banco deve ser populado com **1.000 restaurantes de São Paulo** antes
+da primeira execução em demo.
+
+- Fonte: geração via LLM (script `seed/generate.js`)
+- Coleção alvo: `restaurants`
+- Pré-requisito para criação dos índices do Atlas Search
+- Comando: `npm run seed`
+- Distribuição esperada: cobrir pelo menos 20 bairros diferentes de SP
+
+### Campos obrigatórios no seed
+Todos os 1.000 documentos devem ter preenchidos:
+- `name`, `location`, `city`, `neighborhood`, `cuisine`
+
+### Campos recomendados no seed
+Preencher em 100% dos documentos para maximizar a demo:
+- `priceRange`, `rating`, `reviewCount`, `address`, `categories`
+
+### Critério de aceite
+Coleção `restaurants` com ≥ 1.000 documentos válidos, com campos
+obrigatórios preenchidos em 100% dos documentos e campos recomendados
+preenchidos em no mínimo 90% dos documentos.

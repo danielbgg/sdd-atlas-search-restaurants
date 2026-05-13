@@ -49,6 +49,24 @@ Como pessoa buscando opcoes praticas, quero combinar o local escolhido no mapa c
 
 1. **Given** que o usuario definiu uma area no mapa e digitou um nome, **When** a busca e executada, **Then** os resultados atendem ao filtro textual e geografico ao mesmo tempo.
 
+---
+
+### User Story 4 - Filtrar restaurantes por tipo de culinaria e preco (Priority: P2)
+
+Como pessoa descobrindo opcoes, quero filtrar os restaurantes visiveis no mapa por tipo de culinaria e faixa de preco para encontrar opcoes relevantes ao meu contexto.
+
+**Why this priority**: Demonstra as capacidades de facets e filtros compostos do Atlas Search, que sao diferenciais centrais da demonstracao.
+
+**Independent Test**: Pode ser testado isoladamente selecionando um filtro de cuisine ou priceRange e validando que apenas restaurantes correspondentes aparecem nos resultados.
+
+**Acceptance Scenarios**:
+
+1. **Given** que o usuario selecionou um tipo de culinaria, **When** a busca e executada, **Then** apenas restaurantes com aquele cuisine aparecem nos resultados.
+2. **Given** que o usuario selecionou uma faixa de preco, **When** a busca e executada, **Then** apenas restaurantes dentro daquela faixa aparecem nos resultados.
+3. **Given** que o usuario combinou filtro de cuisine, priceRange e area do mapa, **When** a busca e executada, **Then** os resultados respeitam todos os filtros simultaneamente.
+
+---
+
 ### Edge Cases
 
 - O que acontece quando o usuario seleciona uma area sem restaurantes no viewport?
@@ -56,6 +74,7 @@ Como pessoa buscando opcoes praticas, quero combinar o local escolhido no mapa c
 - O que acontece quando o usuario digita mais de 2 caracteres incorretos no nome?
 - Como o sistema se comporta com conexao lenta durante atualizacao de mapa e sugestoes?
 - O que acontece quando o usuario tenta buscar fora da cidade de Sao Paulo no MVP?
+- O que acontece quando a combinacao de filtros (cuisine + priceRange + area) nao retorna resultados?
 
 ## Requirements *(mandatory)*
 
@@ -69,8 +88,12 @@ Como pessoa buscando opcoes praticas, quero combinar o local escolhido no mapa c
 - **FR-006**: O sistema MUST aceitar tolerancia de ate 2 caracteres incorretos na busca por nome e ainda retornar sugestoes relevantes quando houver correspondencia aproximada.
 - **FR-007**: O usuario MUST poder selecionar uma sugestao de nome para refinar os resultados exibidos.
 - **FR-008**: O sistema MUST combinar filtro geografico e filtro por nome quando ambos estiverem ativos.
-- **FR-009**: O sistema MUST informar claramente quando nao houver resultados para a combinacao atual de mapa e nome.
+- **FR-009**: O sistema MUST informar claramente quando nao houver resultados para a combinacao atual de filtros ativos.
 - **FR-010**: O sistema MUST limitar o escopo do MVP a restaurantes na cidade de Sao Paulo.
+- **FR-011**: O sistema SHOULD permitir filtrar restaurantes por tipo de culinaria (cuisine).
+- **FR-012**: O sistema SHOULD permitir filtrar restaurantes por faixa de preco (priceRange 1–4).
+- **FR-013**: O sistema SHOULD exibir avaliacao media (rating) nos cards de resultado.
+- **FR-014**: O sistema SHOULD exibir o bairro (neighborhood) nos cards de resultado.
 
 ### Quality, UX, and Performance Requirements *(mandatory)*
 
@@ -82,10 +105,10 @@ Como pessoa buscando opcoes praticas, quero combinar o local escolhido no mapa c
 
 ### Key Entities *(include if feature involves data)*
 
-- **Restaurant**: Representa um restaurante exibivel, com nome, coordenadas geograficas e atributos de exibicao basicos.
-- **MapViewport**: Representa o recorte geografico ativo definido por centro e nivel de zoom.
+- **Restaurant**: Representa um restaurante exibivel, com nome, coordenadas geograficas, bairro, tipo de culinaria, faixa de preco, avaliacao e atributos de exibicao.
+- **MapViewport**: Representa o recorte geografico ativo definido por centro, nivel de zoom e bounding box.
 - **SearchQuery**: Representa o texto digitado pelo usuario para busca por nome e estado de selecao de sugestao.
-- **SearchResultSet**: Representa o conjunto final de restaurantes retornados pela combinacao de filtros geograficos e textuais.
+- **SearchSession**: Representa a sessao de busca ativa, combinando viewport, query textual e filtros, e produzindo o conjunto de resultados.
 
 ## Success Criteria *(mandatory)*
 
@@ -99,11 +122,12 @@ Como pessoa buscando opcoes praticas, quero combinar o local escolhido no mapa c
 - **SC-006**: 100% dos requisitos funcionais possuem ao menos um cenario de aceitacao rastreavel nas historias do documento.
 - **SC-007**: Em revisao de UX, nao sao identificadas inconsistencias de estado entre lista, mapa e campo de busca nos fluxos principais.
 - **SC-008**: O fluxo principal de descoberta (abrir mapa, selecionar ponto e visualizar restaurantes) e concluido em ate 60 segundos por usuarios de primeira viagem em ambiente de teste.
+- **SC-009**: Em testes de filtragem, 100% das combinacoes de cuisine + priceRange + area retornam apenas resultados que satisfazem todos os filtros ativos simultaneamente.
 
 ## Assumptions
 
 - O MVP sera focado exclusivamente na cidade de Sao Paulo e nao cobrira outras cidades nesta fase.
-- A base de restaurantes disponivel para a demonstracao possui dados suficientes de geolocalizacao e nome para viabilizar os testes.
+- Filtros por cuisine e priceRange sao incluidos no MVP como forma de demonstrar as capacidades de facets e filtros compostos do Atlas Search.
+- A base de dados sera populada via script de seed com 1.000 restaurantes gerados via LLM, cobrindo ao menos 20 bairros de Sao Paulo, antes da primeira demonstracao.
 - O usuario acessara a aplicacao com conexao de internet funcional durante a demonstracao.
-- Funcionalidades alem de geolocalizacao e busca nominal (como avaliacao, horario, filtros avancados) ficam fora do escopo inicial.
 - O objetivo principal desta fase e validar a experiencia de descoberta geoespacial e textual em uma demonstracao funcional.
