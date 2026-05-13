@@ -29,6 +29,10 @@ export class RestaurantRepository {
       },
     };
 
+    console.info('[MDB] find — coleção: restaurants');
+    console.info('[MDB] filter:', JSON.stringify(filter, null, 2));
+    console.info('[MDB] limit:', limit ?? 50);
+
     const docs = await this.collection
       .find(filter)
       .limit(limit ?? 50)
@@ -100,6 +104,9 @@ export class RestaurantRepository {
       { $limit: limit ?? 50 },
     ];
 
+    console.info('[MDB] aggregate — coleção: restaurants (Atlas Search)');
+    console.info('[MDB] pipeline:', JSON.stringify(pipeline, null, 2));
+
     const docs = await this.collection.aggregate<RestaurantDocument & { scoreTextual: number }>(pipeline).toArray();
     return docs.map(documentToResult);
   }
@@ -125,17 +132,27 @@ export class RestaurantRepository {
         $project: {
           _id: 1,
           name: 1,
+          location: 1,
           score: { $meta: 'searchScore' },
         },
       },
       { $limit: limit ?? 10 },
     ];
 
-    const docs = await this.collection.aggregate<{ _id: { toString(): string }; name: string }>(pipeline).toArray();
+    console.info('[MDB] aggregate — coleção: restaurants (autocomplete)');
+    console.info('[MDB] pipeline:', JSON.stringify(pipeline, null, 2));
+
+    const docs = await this.collection.aggregate<{
+      _id: { toString(): string };
+      name: string;
+      location: { coordinates: [number, number] };
+    }>(pipeline).toArray();
 
     return docs.map((doc) => ({
       id: doc._id.toString(),
       name: doc.name,
+      lat: doc.location.coordinates[1],
+      lng: doc.location.coordinates[0],
     }));
   }
 }

@@ -180,6 +180,50 @@
 
 ---
 
+## Phase 7: Feature Additions (US5, US6, US7)
+
+**Purpose**: Aprimorar navegação no mapa e observabilidade de queries MongoDB
+
+---
+
+### User Story 5 — Zoom ao selecionar sugestão de autocomplete
+
+**Goal**: Ao clicar em uma sugestão do autocomplete, o mapa navega com flyTo zoom 18 até o restaurante
+
+- [x] T055 [P] [US5] Estender AutocompleteSuggestion com lat/lng no modelo backend em backend/src/models/restaurant.ts
+- [x] T056 [P] [US5] Estender AutocompleteSuggestion com lat/lng no tipo frontend em frontend/src/services/apiClient.ts
+- [x] T057 [US5] Incluir campo location na projeção do pipeline de autocomplete em backend/src/repositories/restaurantRepository.ts
+- [x] T058 [US5] Adicionar estado focusedRestaurant e action FOCUS_RESTAURANT no session store em frontend/src/state/searchSessionStore.tsx
+- [x] T059 [US5] Adicionar FlyToController dentro do MapContainer para reagir a focusedRestaurant em frontend/src/components/MapView.tsx
+- [x] T060 [US5] Chamar focusRestaurant ao selecionar sugestão em frontend/src/components/RestaurantSearchBox.tsx
+
+**Checkpoint**: Selecionar sugestão de autocomplete faz o mapa navegar ao restaurante com zoom 18
+
+---
+
+### User Story 6 — Zoom ao clicar em card da lista de resultados
+
+**Goal**: Clicar em um restaurante da lista lateral navega o mapa até ele com flyTo zoom 18
+
+- [x] T061 [US6] Tornar cards clicáveis em frontend/src/components/RestaurantResultsList.tsx chamando focusRestaurant
+- [x] T062 [US6] Atualizar cursor CSS do .result-item para pointer em frontend/src/index.css
+
+**Checkpoint**: Clicar em qualquer card da lista faz o mapa navegar ao restaurante
+
+---
+
+### User Story 7 — Logging de queries MongoDB no console do servidor
+
+**Goal**: Logar no console do servidor o filtro ou pipeline exato antes de cada execução ao MongoDB
+
+- [x] T063 [US7] Adicionar console.info com filtro $geoWithin (pure geo) em backend/src/repositories/restaurantRepository.ts (findByViewport)
+- [x] T064 [US7] Adicionar console.info com pipeline $search compound completo em backend/src/repositories/restaurantRepository.ts (findByViewportWithSearch)
+- [x] T065 [US7] Adicionar console.info com pipeline $search autocomplete completo em backend/src/repositories/restaurantRepository.ts (autocomplete)
+
+**Checkpoint**: Toda busca (geo puro, search, autocomplete) loga o pipeline JSON no console do servidor
+
+---
+
 ## Post-Implementation Bug Fixes & UI Polish
 
 > Registrados após o build inicial para rastreabilidade. Não alteram requisitos funcionais.

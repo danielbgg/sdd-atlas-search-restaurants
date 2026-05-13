@@ -20,6 +20,7 @@ export interface SearchSession {
   viewport: MapViewport | null;
   rawText: string;
   selectedSuggestion: AutocompleteSuggestion | null;
+  focusedRestaurant: { id: string; lat: number; lng: number } | null;
   results: RestaurantResult[];
   status: 'idle' | 'loading' | 'success' | 'empty' | 'error';
   errorMessage: string | null;
@@ -30,6 +31,7 @@ type Action =
   | { type: 'SET_VIEWPORT'; viewport: MapViewport }
   | { type: 'SET_TEXT'; rawText: string }
   | { type: 'SELECT_SUGGESTION'; suggestion: AutocompleteSuggestion | null }
+  | { type: 'FOCUS_RESTAURANT'; restaurant: { id: string; lat: number; lng: number } | null }
   | { type: 'SET_LOADING' }
   | { type: 'SET_RESULTS'; results: RestaurantResult[] }
   | { type: 'SET_ERROR'; message: string }
@@ -44,6 +46,8 @@ function reducer(state: SearchSession, action: Action): SearchSession {
       return { ...state, rawText: action.rawText, selectedSuggestion: null };
     case 'SELECT_SUGGESTION':
       return { ...state, selectedSuggestion: action.suggestion, status: 'loading' };
+    case 'FOCUS_RESTAURANT':
+      return { ...state, focusedRestaurant: action.restaurant };
     case 'SET_LOADING':
       return { ...state, status: 'loading', errorMessage: null };
     case 'SET_RESULTS':
@@ -68,6 +72,7 @@ const initialState: SearchSession = {
   viewport: null,
   rawText: '',
   selectedSuggestion: null,
+  focusedRestaurant: null,
   results: [],
   status: 'idle',
   errorMessage: null,
@@ -79,6 +84,7 @@ interface SearchSessionContextValue {
   setViewport: (viewport: MapViewport) => void;
   setText: (rawText: string) => void;
   selectSuggestion: (suggestion: AutocompleteSuggestion | null) => void;
+  focusRestaurant: (restaurant: { id: string; lat: number; lng: number } | null) => void;
   setLoading: () => void;
   setResults: (results: RestaurantResult[]) => void;
   setError: (message: string) => void;
@@ -94,6 +100,7 @@ export function SearchSessionProvider({ children }: { children: ReactNode }): JS
   const setViewport = useCallback((viewport: MapViewport) => dispatch({ type: 'SET_VIEWPORT', viewport }), []);
   const setText = useCallback((rawText: string) => dispatch({ type: 'SET_TEXT', rawText }), []);
   const selectSuggestion = useCallback((suggestion: AutocompleteSuggestion | null) => dispatch({ type: 'SELECT_SUGGESTION', suggestion }), []);
+  const focusRestaurant = useCallback((restaurant: { id: string; lat: number; lng: number } | null) => dispatch({ type: 'FOCUS_RESTAURANT', restaurant }), []);
   const setLoading = useCallback(() => dispatch({ type: 'SET_LOADING' }), []);
   const setResults = useCallback((results: RestaurantResult[]) => dispatch({ type: 'SET_RESULTS', results }), []);
   const setError = useCallback((message: string) => dispatch({ type: 'SET_ERROR', message }), []);
@@ -106,6 +113,7 @@ export function SearchSessionProvider({ children }: { children: ReactNode }): JS
       setViewport,
       setText,
       selectSuggestion,
+      focusRestaurant,
       setLoading,
       setResults,
       setError,

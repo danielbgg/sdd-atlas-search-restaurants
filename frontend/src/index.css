@@ -292,7 +292,7 @@ body {
 .result-item {
   padding: 14px 16px;
   border-bottom: 1px solid var(--color-border);
-  cursor: default;
+  cursor: pointer;
   transition: background .12s;
 }
 

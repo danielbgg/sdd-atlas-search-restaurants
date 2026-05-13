@@ -4,7 +4,7 @@ import { useSearchSession } from '../state/searchSessionStore';
 import type { AutocompleteSuggestion } from '../services/apiClient';
 
 export default function RestaurantSearchBox(): JSX.Element {
-  const { session, setText, selectSuggestion } = useSearchSession();
+  const { session, setText, selectSuggestion, focusRestaurant } = useSearchSession();
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [inputValue, setInputValue] = useState(session.rawText);
@@ -40,6 +40,7 @@ export default function RestaurantSearchBox(): JSX.Element {
     setSuggestions([]);
     setShowDropdown(false);
     selectSuggestion(suggestion);
+    focusRestaurant({ id: suggestion.id, lat: suggestion.lat, lng: suggestion.lng });
   };
 
   const handleClear = (): void => {

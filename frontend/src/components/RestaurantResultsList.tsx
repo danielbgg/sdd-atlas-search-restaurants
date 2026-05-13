@@ -1,3 +1,4 @@
+import { useSearchSession } from '../state/searchSessionStore';
 import type { RestaurantResult } from '../services/apiClient';
 
 interface RestaurantResultsListProps {
@@ -17,6 +18,7 @@ export default function RestaurantResultsList({
   errorMessage,
   hasActiveFilters,
 }: RestaurantResultsListProps): JSX.Element {
+  const { focusRestaurant } = useSearchSession();
   if (status === 'idle') {
     return (
       <div className="results-state results-idle" data-testid="results-idle">
@@ -60,7 +62,13 @@ export default function RestaurantResultsList({
       <p className="results-count">{results.length} restaurante{results.length !== 1 ? 's' : ''} encontrado{results.length !== 1 ? 's' : ''}</p>
       <ul>
         {results.map((r) => (
-          <li key={r.id} className="result-item" data-testid="result-item">
+          <li
+            key={r.id}
+            className="result-item"
+            data-testid="result-item"
+            onClick={() => focusRestaurant({ id: r.id, lat: r.location.lat, lng: r.location.lng })}
+            title="Ver no mapa"
+          >
             <div className="result-header">
               <div className="result-name">{r.name}</div>
               {r.rating !== undefined && (

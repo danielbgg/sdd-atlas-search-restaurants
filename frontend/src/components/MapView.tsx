@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { useEffect, useRef } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useSearchSession } from '../state/searchSessionStore';
 import type { MapViewport } from '../state/searchSessionStore';
@@ -57,6 +57,22 @@ interface MapViewProps {
   restaurants: RestaurantResult[];
 }
 
+function FlyToController(): null {
+  const map = useMap();
+  const { session } = useSearchSession();
+  const { focusedRestaurant } = session;
+  const prevIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!focusedRestaurant) return;
+    if (prevIdRef.current === focusedRestaurant.id) return;
+    prevIdRef.current = focusedRestaurant.id;
+    map.flyTo([focusedRestaurant.lat, focusedRestaurant.lng], 18, { duration: 1.2 });
+  }, [focusedRestaurant, map]);
+
+  return null;
+}
+
 export default function MapView({ restaurants }: MapViewProps): JSX.Element {
   const { setViewport } = useSearchSession();
 
@@ -72,6 +88,7 @@ export default function MapView({ restaurants }: MapViewProps): JSX.Element {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <ViewportListener onViewportChange={setViewport} />
+        <FlyToController />
         {restaurants.map((r) => (
           <Marker key={r.id} position={[r.location.lat, r.location.lng]}>
             <Popup>

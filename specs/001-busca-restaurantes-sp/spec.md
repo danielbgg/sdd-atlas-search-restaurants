@@ -67,6 +67,52 @@ Como pessoa descobrindo opcoes, quero filtrar os restaurantes visiveis no mapa p
 
 ---
 
+### User Story 5 - Navegar ao restaurante selecionado no autocomplete (Priority: P2)
+
+Como pessoa que encontrou o restaurante desejado via autocomplete, quero que o mapa navegue automaticamente até ele com zoom máximo ao selecionar a sugestão.
+
+**Why this priority**: Elimina a fricção de localizar manualmente no mapa um restaurante já identificado pelo nome.
+
+**Independent Test**: Digitar um nome, selecionar uma sugestão e validar que o mapa centraliza e aplica zoom máximo nas coordenadas daquele restaurante.
+
+**Acceptance Scenarios**:
+
+1. **Given** que o usuario digitou um nome e as sugestoes aparecem, **When** ele seleciona uma sugestao, **Then** o mapa navega com animação (flyTo) até as coordenadas do restaurante em zoom máximo (18).
+2. **Given** que o usuario selecionou uma sugestao, **When** a navegação é concluída, **Then** o dropdown de sugestoes fica oculto e o campo exibe o nome escolhido.
+
+---
+
+### User Story 6 - Navegar ao restaurante selecionado na lista de resultados (Priority: P2)
+
+Como pessoa explorando a lista de resultados, quero clicar em um restaurante da lista para que o mapa navegue até ele com zoom máximo.
+
+**Why this priority**: Complementa a descoberta visual — o usuário pode ler os detalhes na lista e confirmar a localização exata no mapa.
+
+**Independent Test**: Com resultados carregados, clicar em um card da lista e validar que o mapa centraliza com flyTo no restaurante selecionado.
+
+**Acceptance Scenarios**:
+
+1. **Given** que a lista de resultados exibe restaurantes, **When** o usuario clica em um card, **Then** o mapa navega com animação até as coordenadas daquele restaurante em zoom 18.
+2. **Given** que o usuario clica no mesmo restaurante novamente, **Then** o mapa não refaz a animação (idempotente por ID).
+
+---
+
+### User Story 7 - Visualizar queries MongoDB no backend (Priority: P3)
+
+Como desenvolvedor demonstrando as capacidades do Atlas Search, quero ver no console do servidor as queries e pipelines de agregação exatos enviados ao MongoDB para cada busca.
+
+**Why this priority**: Diferencial didático da demonstração — mostra ao vivo como geo, texto e filtros se traduzem em operadores MongoDB ($geoWithin, $search compound, autocomplete).
+
+**Independent Test**: Executar uma busca com geo + texto + filtros e verificar no console do servidor o pipeline JSON correspondente com todos os campos preenchidos.
+
+**Acceptance Scenarios**:
+
+1. **Given** que o usuario faz uma busca apenas por viewport, **When** a query é executada, **Then** o servidor loga o filtro `$geoWithin` com as coordenadas do bounding box.
+2. **Given** que o usuario adiciona texto e/ou filtros à busca, **When** a query é executada, **Then** o servidor loga o pipeline `$search compound` completo com os `must` (geo + text) e `filter` (cuisine, priceRange) populados.
+3. **Given** que o usuario usa o autocomplete, **When** a query é executada, **Then** o servidor loga o pipeline com `$search autocomplete` incluindo o termo e configuração fuzzy.
+
+---
+
 ### Edge Cases
 
 - O que acontece quando o usuario seleciona uma area sem restaurantes no viewport?
@@ -94,6 +140,10 @@ Como pessoa descobrindo opcoes, quero filtrar os restaurantes visiveis no mapa p
 - **FR-012**: O sistema SHOULD permitir filtrar restaurantes por faixa de preco (priceRange 1–4).
 - **FR-013**: O sistema SHOULD exibir avaliacao media (rating) nos cards de resultado.
 - **FR-014**: O sistema SHOULD exibir o bairro (neighborhood) nos cards de resultado.
+- **FR-015**: O sistema MUST navegar o mapa (flyTo zoom 18) ao restaurante quando o usuario seleciona uma sugestao de autocomplete.
+- **FR-016**: O sistema MUST navegar o mapa (flyTo zoom 18) ao restaurante quando o usuario clica em um card da lista de resultados.
+- **FR-017**: A endpoint de autocomplete MUST retornar as coordenadas (lat, lng) de cada sugestao para viabilizar a navegação no mapa.
+- **FR-018**: O servidor MUST logar no console o filtro ou pipeline MongoDB exato antes de cada execução de query (geo, search compound, autocomplete).
 
 ### Quality, UX, and Performance Requirements *(mandatory)*
 
