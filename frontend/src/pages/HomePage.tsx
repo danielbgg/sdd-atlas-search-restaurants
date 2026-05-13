@@ -11,7 +11,12 @@ function HomePageInner(): JSX.Element {
   const { session, setLoading, setResults, setError } = useSearchSession();
   const { viewport, selectedSuggestion, rawText, filters, status } = session;
   const abortRef = useRef<AbortController | null>(null);
-  const facets = useFacets(viewport);
+  const facets = useFacets(viewport ? {
+    neLat: viewport.northEastLat,
+    neLng: viewport.northEastLng,
+    swLat: viewport.southWestLat,
+    swLng: viewport.southWestLng,
+  } : null);
 
   useEffect(() => {
     if (!viewport) return;

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { fetchFacets } from '../services/apiClient';
 import type { FacetsResponse, FacetsParams } from '../services/apiClient';
 
-const EMPTY: FacetsResponse = { cuisines: [], priceRanges: [] };
+const EMPTY: FacetsResponse = { cuisines: [], priceRanges: [], ratingRanges: [] };
 const DEBOUNCE_MS = 400;
 
 export function useFacets(viewport: FacetsParams | null): FacetsResponse {
