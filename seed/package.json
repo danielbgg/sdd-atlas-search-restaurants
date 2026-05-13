@@ -4,10 +4,10 @@
   "description": "Seed scripts for restaurant search demo",
   "type": "module",
   "scripts": {
-    "generate": "node generate.js",
+    "fetch": "node fetchData.js",
     "ingest": "node --env-file=.env ingest.js",
     "create-index": "node --env-file=.env createIndex.js",
-    "seed": "npm run generate && npm run ingest && npm run create-index"
+    "seed": "npm run fetch && npm run ingest && npm run create-index"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

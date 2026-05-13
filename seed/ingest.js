@@ -33,7 +33,7 @@ if (!MONGODB_URI) {
 
 const restaurantsPath = join(__dir, 'restaurants.json');
 if (!existsSync(restaurantsPath)) {
-  console.error('ERROR: restaurants.json not found. Run: node seed/generate.js first.');
+  console.error('ERROR: restaurants.json not found. Run: node fetchData.js first.');
   process.exit(1);
 }
 
@@ -45,6 +45,12 @@ try {
   await client.connect();
   const db = client.db();
   const collection = db.collection('restaurants');
+
+  // Remove dados anteriores para garantir um import limpo
+  const deleteResult = await collection.deleteMany({});
+  if (deleteResult.deletedCount > 0) {
+    console.info(`✓ Removidos ${deleteResult.deletedCount} documentos anteriores`);
+  }
 
   // Cria índice 2dsphere para consultas geoespaciais
   await collection.createIndex({ location: '2dsphere' });

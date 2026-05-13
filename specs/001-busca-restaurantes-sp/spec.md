@@ -224,6 +224,6 @@ Como desenvolvedor demonstrando as capacidades do Atlas Search, quero ver no con
 
 - O MVP sera focado exclusivamente na cidade de Sao Paulo e nao cobrira outras cidades nesta fase.
 - Filtros por cuisine e priceRange sao incluidos no MVP como forma de demonstrar as capacidades de facets e filtros compostos do Atlas Search.
-- A base de dados sera populada via script de seed com 1.000 restaurantes gerados via LLM, cobrindo ao menos 20 bairros de Sao Paulo, antes da primeira demonstracao.
+- A base de dados sera populada via script de seed com 1.000 restaurantes reais obtidos do OpenStreetMap (Overpass API), com geolocalizacao verificada e enderecos reais, cobrindo ao menos 25 bairros de Sao Paulo, antes da primeira demonstracao.
 - O usuario acessara a aplicacao com conexao de internet funcional durante a demonstracao.
 - O objetivo principal desta fase e validar a experiencia de descoberta geoespacial e textual em uma demonstracao funcional.

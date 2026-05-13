@@ -42,7 +42,7 @@
 **CRITICAL**: Deve ser executada antes da Phase 2 e de qualquer teste de integracao
 
 - [x] T007A [P] Create .env.example with MONGODB_URI placeholder in seed/.env.example
-- [x] T007B Create LLM-based restaurant generation script in seed/generate.js
+- [x] T007B Create OpenStreetMap/Overpass API fetch script in seed/fetchData.js (replaces LLM-based generate.js; fetches 1000 real restaurants with verified coordinates)
 - [x] T007C Create MongoDB ingestion script in seed/ingest.js
 - [x] T007D Create Atlas Search index creation script in seed/createIndex.js
 - [x] T007E Wire all seed steps into npm run seed command in backend/package.json

@@ -91,14 +91,17 @@
 
 ## Seed Data
 
-O banco deve ser populado com **1.000 restaurantes de São Paulo** antes
+O banco deve ser populado com **1.000 restaurantes reais de São Paulo** antes
 da primeira execução em demo.
 
-- Fonte: geração via LLM (script `seed/generate.js`)
+- Fonte: **OpenStreetMap** via Overpass API (script `seed/fetchData.js`) — dados públicos, sem necessidade de credenciais
+- Licença: OpenStreetMap © Colaboradores do OpenStreetMap (ODbL 1.0)
 - Coleção alvo: `restaurants`
 - Pré-requisito para criação dos índices do Atlas Search
-- Comando: `npm run seed`
-- Distribuição esperada: cobrir pelo menos 20 bairros diferentes de SP
+- Comando: `npm run seed` (equivale a `fetch` + `ingest` + `create-index`)
+- O script `ingest.js` apaga documentos anteriores antes de inserir (import limpo)
+- Distribuição esperada: cobrir 25+ bairros diferentes de SP com nomes e
+  coordenadas geoespaciais verificadas pelo mapeamento colaborativo do OSM
 
 ### Campos obrigatórios no seed
 Todos os 1.000 documentos devem ter preenchidos:
