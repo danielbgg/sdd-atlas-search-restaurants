@@ -32,6 +32,7 @@ export interface SearchParams {
   limit?: number;
   cuisine?: string;
   priceRange?: number;
+  minRating?: number;
 }
 
 export interface SearchResponse {
@@ -51,6 +52,7 @@ export interface FacetBucket {
 export interface FacetsResponse {
   cuisines: FacetBucket[];
   priceRanges: FacetBucket[];
+  ratingRanges: FacetBucket[];
 }
 
 export interface FacetsParams {

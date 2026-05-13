@@ -14,6 +14,7 @@ export interface MapViewport {
 export interface ActiveFilters {
   cuisine?: string;
   priceRange?: number;
+  minRating?: number;
 }
 
 export interface SearchSession {
@@ -36,7 +37,8 @@ type Action =
   | { type: 'SET_RESULTS'; results: RestaurantResult[] }
   | { type: 'SET_ERROR'; message: string }
   | { type: 'SET_FILTER_CUISINE'; cuisine: string | undefined }
-  | { type: 'SET_FILTER_PRICE_RANGE'; priceRange: number | undefined };
+  | { type: 'SET_FILTER_PRICE_RANGE'; priceRange: number | undefined }
+  | { type: 'SET_FILTER_MIN_RATING'; minRating: number | undefined };
 
 function reducer(state: SearchSession, action: Action): SearchSession {
   switch (action.type) {
@@ -63,6 +65,8 @@ function reducer(state: SearchSession, action: Action): SearchSession {
       return { ...state, filters: { ...state.filters, cuisine: action.cuisine }, status: 'loading' };
     case 'SET_FILTER_PRICE_RANGE':
       return { ...state, filters: { ...state.filters, priceRange: action.priceRange }, status: 'loading' };
+    case 'SET_FILTER_MIN_RATING':
+      return { ...state, filters: { ...state.filters, minRating: action.minRating }, status: 'loading' };
     default:
       return state;
   }
@@ -90,6 +94,7 @@ interface SearchSessionContextValue {
   setError: (message: string) => void;
   setFilterCuisine: (cuisine: string | undefined) => void;
   setFilterPriceRange: (priceRange: number | undefined) => void;
+  setFilterMinRating: (minRating: number | undefined) => void;
 }
 
 const SearchSessionContext = createContext<SearchSessionContextValue | null>(null);
@@ -106,6 +111,7 @@ export function SearchSessionProvider({ children }: { children: ReactNode }): JS
   const setError = useCallback((message: string) => dispatch({ type: 'SET_ERROR', message }), []);
   const setFilterCuisine = useCallback((cuisine: string | undefined) => dispatch({ type: 'SET_FILTER_CUISINE', cuisine }), []);
   const setFilterPriceRange = useCallback((priceRange: number | undefined) => dispatch({ type: 'SET_FILTER_PRICE_RANGE', priceRange }), []);
+  const setFilterMinRating = useCallback((minRating: number | undefined) => dispatch({ type: 'SET_FILTER_MIN_RATING', minRating }), []);
 
   return (
     <SearchSessionContext.Provider value={{
@@ -119,6 +125,7 @@ export function SearchSessionProvider({ children }: { children: ReactNode }): JS
       setError,
       setFilterCuisine,
       setFilterPriceRange,
+      setFilterMinRating,
     }}>
       {children}
     </SearchSessionContext.Provider>

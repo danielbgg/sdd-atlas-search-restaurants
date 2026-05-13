@@ -9,6 +9,7 @@ export const SearchQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional().default(50),
   cuisine: z.string().max(100).optional(),
   priceRange: z.coerce.number().int().min(1).max(4).optional(),
+  minRating: z.coerce.number().min(1).max(5).optional(),
 }).refine(
   (data) => data.neLat > data.swLat,
   { message: 'neLat must be greater than swLat', path: ['neLat'] }

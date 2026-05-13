@@ -35,6 +35,7 @@ function HomePageInner(): JSX.Element {
       ...(query ? { q: query } : {}),
       ...(filters.cuisine ? { cuisine: filters.cuisine } : {}),
       ...(filters.priceRange !== undefined ? { priceRange: filters.priceRange } : {}),
+      ...(filters.minRating !== undefined ? { minRating: filters.minRating } : {}),
     };
 
     searchRestaurants(params)
@@ -49,7 +50,7 @@ function HomePageInner(): JSX.Element {
   }, [viewport, selectedSuggestion, rawText, filters, setLoading, setResults, setError]);
 
   const hasActiveFilters = Boolean(
-    rawText || selectedSuggestion || filters.cuisine || filters.priceRange !== undefined
+    rawText || selectedSuggestion || filters.cuisine || filters.priceRange !== undefined || filters.minRating !== undefined
   );
 
   return (

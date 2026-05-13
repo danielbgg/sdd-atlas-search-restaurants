@@ -10,10 +10,10 @@ export class RestaurantRepository {
   }
 
   async findByViewport(query: SearchQuery): Promise<RestaurantResult[]> {
-    const { neLat, neLng, swLat, swLng, limit, q, cuisine, priceRange } = query;
+    const { neLat, neLng, swLat, swLng, limit, q, cuisine, priceRange, minRating } = query;
 
     // Use Atlas Search $search when text query or filters are provided
-    if (q || cuisine || priceRange !== undefined) {
+    if (q || cuisine || priceRange !== undefined || minRating !== undefined) {
       return this.findByViewportWithSearch(query);
     }
 
@@ -42,7 +42,7 @@ export class RestaurantRepository {
   }
 
   private async findByViewportWithSearch(query: SearchQuery): Promise<RestaurantResult[]> {
-    const { neLat, neLng, swLat, swLng, limit, q, cuisine, priceRange } = query;
+    const { neLat, neLng, swLat, swLng, limit, q, cuisine, priceRange, minRating } = query;
 
     const mustClauses: unknown[] = [
       {
@@ -80,6 +80,14 @@ export class RestaurantRepository {
         equals: {
           path: 'priceRange',
           value: priceRange,
+        },
+      });
+    }
+    if (minRating !== undefined) {
+      filterClauses.push({
+        range: {
+          path: 'rating',
+          gte: minRating,
         },
       });
     }
@@ -184,6 +192,11 @@ export class RestaurantRepository {
                 path: 'priceRange',
                 boundaries: [1, 2, 3, 4, 5],
               },
+              ratingFacet: {
+                type: 'number',
+                path: 'rating',
+                boundaries: [1, 2, 3, 4, 5, 6],
+              },
             },
           },
         },
@@ -197,6 +210,7 @@ export class RestaurantRepository {
       facet: {
         cuisineFacet: { buckets: { _id: string; count: number }[] };
         priceRangeFacet: { buckets: { _id: number; count: number }[] };
+        ratingFacet: { buckets: { _id: number; count: number }[] };
       };
     };
 
@@ -219,6 +233,12 @@ export class RestaurantRepository {
       .sort((a, b) => a._id - b._id)
       .map((b) => ({ value: PRICE_LABELS[b._id] ?? String(b._id), count: b.count }));
 
-    return { cuisines, priceRanges };
+    const RATING_LABELS: Record<number, string> = { 1: '★1+', 2: '★2+', 3: '★3+', 4: '★4+', 5: '★5' };
+    const ratingRanges: FacetBucket[] = (meta.facet.ratingFacet?.buckets ?? [])
+      .filter((b) => b._id >= 1 && b._id <= 5 && b.count > 0)
+      .sort((a, b) => a._id - b._id)
+      .map((b) => ({ value: RATING_LABELS[b._id] ?? `★${b._id}+`, count: b.count }));
+
+    return { cuisines, priceRanges, ratingRanges };
   }
 }

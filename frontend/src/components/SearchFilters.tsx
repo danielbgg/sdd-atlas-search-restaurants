@@ -2,14 +2,15 @@ import { useSearchSession } from '../state/searchSessionStore';
 import type { FacetsResponse } from '../services/apiClient';
 
 const PRICE_VALUE: Record<string, number> = { '$': 1, '$$': 2, '$$$': 3, '$$$$': 4 };
+const RATING_VALUE: Record<string, number> = { '★1+': 1, '★2+': 2, '★3+': 3, '★4+': 4, '★5': 5 };
 
 interface SearchFiltersProps {
   facets: FacetsResponse;
 }
 
 export default function SearchFilters({ facets }: SearchFiltersProps): JSX.Element {
-  const { session, setFilterCuisine, setFilterPriceRange } = useSearchSession();
-  const { cuisine, priceRange } = session.filters;
+  const { session, setFilterCuisine, setFilterPriceRange, setFilterMinRating } = useSearchSession();
+  const { cuisine, priceRange, minRating } = session.filters;
 
   return (
     <div className="search-filters" data-testid="search-filters">
@@ -55,6 +56,32 @@ export default function SearchFilters({ facets }: SearchFiltersProps): JSX.Eleme
           ))}
         </div>
       </div>
+      {facets.ratingRanges.length > 0 && (
+        <div className="filter-group">
+          <div className="price-buttons" data-testid="rating-filter">
+            <button
+              className={`price-btn ${minRating === undefined ? 'active' : ''}`}
+              onClick={() => setFilterMinRating(undefined)}
+              title="Todas as avaliações"
+            >
+              ★ Todas
+            </button>
+            {facets.ratingRanges.map((r) => (
+              <button
+                key={r.value}
+                className={`price-btn ${minRating === RATING_VALUE[r.value] ? 'active' : ''}`}
+                onClick={() => {
+                  const val = RATING_VALUE[r.value];
+                  setFilterMinRating(minRating === val ? undefined : val);
+                }}
+                title={`Avaliação mínima ${r.value} (${r.count})`}
+              >
+                {r.value}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

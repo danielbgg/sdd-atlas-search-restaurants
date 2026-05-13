@@ -52,10 +52,15 @@ const SEARCH_INDEX_DEFINITION = {
             analyzer: 'lucene.standard',
           },
         ],
-        cuisine: {
-          type: 'string',
-          analyzer: 'lucene.standard',
-        },
+        cuisine: [
+          {
+            type: 'string',
+            analyzer: 'lucene.standard',
+          },
+          {
+            type: 'stringFacet',
+          },
+        ],
         neighborhood: {
           type: 'string',
           analyzer: 'lucene.standard',
@@ -68,12 +73,22 @@ const SEARCH_INDEX_DEFINITION = {
           type: 'string',
           analyzer: 'lucene.keyword',
         },
-        priceRange: {
-          type: 'number',
-        },
-        rating: {
-          type: 'number',
-        },
+        priceRange: [
+          {
+            type: 'number',
+          },
+          {
+            type: 'numberFacet',
+          },
+        ],
+        rating: [
+          {
+            type: 'number',
+          },
+          {
+            type: 'numberFacet',
+          },
+        ],
         location: {
           type: 'geo',
         },
@@ -91,17 +106,21 @@ try {
 
   console.info('Creating Atlas Search index "default" on restaurants collection...');
 
+  // Drop existing index if present, then recreate with updated definition
   try {
-    await collection.createSearchIndex(SEARCH_INDEX_DEFINITION);
-    console.info('✓ Atlas Search index creation initiated.');
-    console.info('  Note: Index takes 1-2 minutes to become active on Atlas.');
+    await collection.dropSearchIndex('default');
+    console.info('  Dropped existing "default" index, recreating...');
+    // Wait briefly to allow Atlas to process the drop
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   } catch (err) {
-    if (err.codeName === 'IndexAlreadyExists' || err.message?.includes('already exists')) {
-      console.info('✓ Atlas Search index "default" already exists — skipping.');
-    } else {
-      throw err;
+    if (!err.message?.includes('index not found') && err.codeName !== 'IndexNotFound') {
+      console.warn('  Could not drop existing index (may not exist yet):', err.message);
     }
   }
+
+  await collection.createSearchIndex(SEARCH_INDEX_DEFINITION);
+  console.info('✓ Atlas Search index creation initiated.');
+  console.info('  Note: Index takes 1-2 minutes to become active on Atlas.');
 } finally {
   await client.close();
 }
