@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: Restaurant Search API
+  version: 0.2.0
+  description: MVP API para busca de restaurantes em Sao Paulo por geolocalizacao, nome, culinaria e preco.
+servers:
+  - url: http://localhost:3001
+    description: Local development
+paths:
+  /v1/health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+        "503":
+          description: Service unavailable
+  /v1/restaurants/search:
+    get:
+      summary: Busca restaurantes por viewport, texto, culinaria e faixa de preco
+      parameters:
+        - in: query
+          name: neLat
+          required: true
+          schema:
+            type: number
+            minimum: -90
+            maximum: 90
+          example: -23.5
+        - in: query
+          name: neLng
+          required: true
+          schema:
+            type: number
+            minimum: -180
+            maximum: 180
+          example: -46.6
+        - in: query
+          name: swLat
+          required: true
+          schema:
+            type: number
+            minimum: -90
+            maximum: 90
+          example: -23.7
+        - in: query
+          name: swLng
+          required: true
+          schema:
+            type: number
+            minimum: -180
+            maximum: 180
+          example: -46.8
+        - in: query
+          name: q
+          required: false
+          description: Busca textual por nome do restaurante (fuzzy, ate 2 erros)
+          schema:
+            type: string
+            maxLength: 200
+          example: pizza
+        - in: query
+          name: cuisine
+          required: false
+          description: Filtrar por tipo de culinaria
+          schema:
+            type: string
+            maxLength: 100
+          example: italiana
+        - in: query
+          name: priceRange
+          required: false
+          description: Filtrar por faixa de preco (1=barato, 4=caro)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 4
+          example: 2
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        "200":
+          description: Resultados da busca
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    example: 12
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RestaurantResult"
+        "400":
+          description: Parametros invalidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/restaurants/autocomplete:
+    get:
+      summary: Sugestoes de nome com fuzzy ate 2 caracteres
+      parameters:
+        - in: query
+          name: q
+          required: true
+          description: Prefixo ou termo de busca
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+          example: pizz
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        "200":
+          description: Sugestoes de nome
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestions:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AutocompleteSuggestion"
+        "400":
+          description: Parametros invalidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    RestaurantResult:
+      type: object
+      required:
+        - id
+        - name
+        - location
+      properties:
+        id:
+          type: string
+          example: "6648a1b2c3d4e5f6a7b8c9d0"
+        name:
+          type: string
+          example: "Pizzaria Central"
+        location:
+          $ref: "#/components/schemas/GeoPoint"
+        address:
+          type: string
+          example: "Rua Augusta, 100 - Consolação"
+        neighborhood:
+          type: string
+          example: "Consolação"
+        categories:
+          type: array
+          items:
+            type: string
+          example: ["pizzaria"]
+        cuisine:
+          type: string
+          example: "italiana"
+        priceRange:
+          type: integer
+          minimum: 1
+          maximum: 4
+          example: 2
+        rating:
+          type: number
+          minimum: 1.0
+          maximum: 5.0
+          example: 4.3
+        reviewCount:
+          type: integer
+          example: 312
+        distanceMeters:
+          type: number
+          example: 450.0
+        scoreTextual:
+          type: number
+          description: Relevance score from Atlas Search (only present when text query is used)
+          example: 0.85
+    AutocompleteSuggestion:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          example: "6648a1b2c3d4e5f6a7b8c9d0"
+        name:
+          type: string
+          example: "Pizzaria Central"
+    GeoPoint:
+      type: object
+      required:
+        - lat
+        - lng
+      properties:
+        lat:
+          type: number
+          example: -23.558
+        lng:
+          type: number
+          example: -46.661
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: "Invalid request parameters"
+        details:
+          type: object
+

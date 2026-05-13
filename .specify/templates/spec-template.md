@@ -90,6 +90,14 @@
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
+### Quality, UX, and Performance Requirements *(mandatory)*
+
+- **NFR-001 (Code Quality)**: Proposed changes MUST define coding standards impact and error-handling expectations.
+- **NFR-002 (Testing)**: Each functional requirement MUST reference at least one test scenario.
+- **NFR-003 (UX Consistency)**: User-facing flows MUST define expected loading, empty, success, and error states.
+- **NFR-004 (Performance)**: Feature MUST declare measurable performance targets and expected baseline impact.
+- **NFR-005 (Compatibility)**: Feature MUST declare whether it introduces breaking behavior and required migration path.
+
 *Example of marking unclear requirements:*
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
@@ -113,6 +121,10 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-005**: [Code quality metric, e.g., "No critical lint/type issues introduced in touched modules"]
+- **SC-006**: [Testing metric, e.g., "All new tests pass and regression test demonstrates fixed defect"]
+- **SC-007**: [UX consistency metric, e.g., "New flow uses approved messaging and UI states with no inconsistencies"]
+- **SC-008**: [Performance metric, e.g., "p95 latency increase remains under agreed budget"]
 
 ## Assumptions
 
