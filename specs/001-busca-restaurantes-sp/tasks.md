@@ -47,7 +47,7 @@
 - [x] T007D Create Atlas Search index creation script in seed/createIndex.js
 - [x] T007E Wire all seed steps into npm run seed command in backend/package.json
 
-**Checkpoint**: Colecao `restaurants` com >= 1.000 documentos validos e indice Atlas Search criado
+**Checkpoint**: Coleção `restaurants` com ~2.481 documentos válidos (todos os disponíveis no OSM para SP) e índice Atlas Search criado
 
 ---
 

@@ -17,7 +17,7 @@ import { dirname, join } from 'path';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = join(__dir, 'restaurants.json');
-const TARGET = 1000;
+const TARGET = Infinity; // busca todos os restaurantes disponíveis
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Mapeamentos
@@ -216,7 +216,7 @@ const OVERPASS_QUERY = `
   node["amenity"="restaurant"]["name"](${SP_BBOX});
   way["amenity"="restaurant"]["name"](${SP_BBOX});
 );
-out center 1500;
+out center;
 `.trim();
 
 console.log('⏳ Buscando restaurantes reais de São Paulo via OpenStreetMap (Overpass API)...');
@@ -367,10 +367,9 @@ for (const el of elements) {
 
 console.log(`   ${restaurants.length} restaurantes únicos mapeados.`);
 
-if (restaurants.length < TARGET) {
-  console.warn(`\n⚠  Aviso: foram obtidos apenas ${restaurants.length} de ${TARGET} restaurantes solicitados.`);
-  console.warn('   A coleção será populada com os dados disponíveis.');
-  console.warn('   Para obter mais dados, aumente o limite na query Overpass (atualmente 1500).');
+if (restaurants.length < 1000) {
+  console.warn(`\n⚠  Aviso: foram obtidos apenas ${restaurants.length} restaurantes.`);
+  console.warn('   Verifique a conectividade com a Overpass API e tente novamente.');
 }
 
 const cuisineStats = restaurants.reduce((acc, r) => {
